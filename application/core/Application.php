@@ -80,8 +80,7 @@ abstract class Application
         
     public function getModelDir()
     {
-        return $this->getRootDir() . '/models
-        ';
+        return $this->getRootDir() . '/models';
     }
 
     public function getWebDir()
@@ -92,7 +91,7 @@ abstract class Application
     public function run()
     {
         try {
-            $params = $this->router->resolve($this->request->getPathinfo());
+            $params = $this->router->resolve($this->request->getPathInfo());
             if ($params === false) {
                 throw new HttpNotFoundException('No route found for ' . $this->request->getPathInfo());
             }
@@ -103,30 +102,12 @@ abstract class Application
             $this->runAction($controller, $action, $params);
         } catch (HttpNotFoundException $e) {
             $this->render404Page($e);
+        } catch (UnauthorizedActionException $e) {
+            list($controller, $action) = $this->login_action;
+            $this->runAction($controller, $action);
         }
+
         $this->response->send();
-    }
-
-    protected function render404Page($e) 
-    {
-        $this->response->setStatusCode(404, 'Not Found');
-        $message = $this->isDebugModel() ? $e->getMessage() : 'Page not found.';
-        $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
-
-        $this->response->setContent(<<<EOF
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>404</title>
-        </head>
-        <body>
-            {$message}
-            <p>nginxとphpの連携テスト</p>
-        </body>
-        </html>
-        EOF
-            );
     }
 
     public function runAction($controller_name, $action, $params = array())
@@ -161,5 +142,25 @@ abstract class Application
 
         return new $controller_class($this);
     }
-    
+
+        protected function render404Page($e) 
+    {
+        $this->response->setStatusCode(404, 'Not Found');
+        $message = $this->isDebugModel() ? $e->getMessage() : 'Page not found.';
+        $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+
+        $this->response->setContent(<<<EOF
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>404</title>
+        </head>
+        <body>
+            {$message}
+        </body>
+        </html>
+        EOF
+        );
+    }
 }
