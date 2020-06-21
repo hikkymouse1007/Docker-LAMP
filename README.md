@@ -43,3 +43,18 @@ https://zukucode.com/2019/06/docker-compose-mysql.html
 ├── index.html
 └── info.php
 ```
+
+### ビルド
+```
+docker-compose up -d --build
+```
+
+### 起動
+```
+docker-compose up -d 
+```
+
+### データベースの永続化ファイルの削除
+```
+sudo rm -rf docker/db/data
+```

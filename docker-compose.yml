@@ -9,6 +9,7 @@ services:
       - .:/var/www/html
     ports:
       - "8080:80"
+      
   app:
     depends_on:
       - db
@@ -16,6 +17,7 @@ services:
     volumes:
       - .:/var/www/html
       - ./docker/app/php.ini:/usr/local/etc/php/php.ini
+
   db:
     image: mysql
     environment:
@@ -28,6 +30,7 @@ services:
     volumes:
       - ./docker/db/data:/var/lib/mysql
       - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     depends_on:
